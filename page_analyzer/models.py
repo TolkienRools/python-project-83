@@ -1,6 +1,7 @@
 from psycopg2.extras import DictCursor
 from flask import flash
 
+
 class UrlStorage:
 
     def __init__(self, conn):
@@ -30,7 +31,7 @@ class UrlStorage:
             url['id'] = existant_url['id']
             self._update(url)
         else:
-            flash("Страница успешно добавлна", "success") # проверить работает ли flash ?
+            flash("Страница успешно добавлна", "success")
             self._create(url)
 
     def _update(self, url):
@@ -44,8 +45,9 @@ class UrlStorage:
     def _create(self, url):
         with self.conn.cursor() as cur:
             cur.execute(
-                "INSERT INTO urls (name, created_at) VALUES (%s, %s) RETURNING id",
-                (url['name'], url['created_at']) # can't adapt type function
+                """INSERT INTO urls (name, created_at)
+                VALUES (%s, %s) RETURNING id""",
+                (url['name'], url['created_at'])
             )
             id = cur.fetchone()[0]
             url['id'] = id

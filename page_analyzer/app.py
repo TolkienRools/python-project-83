@@ -21,6 +21,7 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 def index():
     return render_template('index.html')
 
+
 @app.route('/urls', methods=['POST'])
 def urls_post():
     from_url = request.form.get('url')
@@ -37,10 +38,12 @@ def urls_post():
     print(url_obj)
     return redirect(url_for('urls_identity', id=url_obj['id']))
 
+
 @app.route('/urls', methods=['GET'])
 def urls_get():
     urls = storage.get_urls()
     return render_template('urls.html', urls=urls)
+
 
 @app.route('/urls/<id>')
 def urls_identity(id):
