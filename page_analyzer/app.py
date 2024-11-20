@@ -6,10 +6,9 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from dotenv import load_dotenv
 from datetime import datetime
 
-from .db import conn
 from .models import UrlStorage
 
-storage = UrlStorage(conn)
+storage = UrlStorage()
 
 load_dotenv()
 
