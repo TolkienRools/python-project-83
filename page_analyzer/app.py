@@ -66,4 +66,5 @@ def urls_identity_checks(id):
         return redirect(url_for('urls_identity', id=id))
 
     checker.save(url_check_obj)
+    flash('Страница успешно проверена', 'success')
     return redirect(url_for('urls_identity', id=id))
