@@ -26,7 +26,7 @@
   </div>
 
     <h2 class="mt-5 mb-3">Проверки</h2>
-    <form method="post" action="/urls/1/checks">
+    <form method="post" action="/urls/{{url.id}}/checks">
     <input type="submit" class="btn btn-primary" value="Запустить проверку">
     </form>
 
@@ -43,16 +43,16 @@
       </tr>
     </thead>
       <tbody>
-
-    <tr>
-        <td>1</td>
-        <td>200</td>
-        <td>Лучшая школа программирования по мнению разработчиков</td>
-        <td>Хекслет — онлайн-школа программирования, онлайн-обучение ИТ-профессиям</td>
-        <td>Хекслет — лучшая школа программирования по версии пользователей Хабра. Авторские программы обучения с практикой и готовыми проектами в резюме. Помощь в трудоустройстве после успешного окончания обучения</td>
-        <td>2024-11-17</td>
-    </tr>
-
+        {% for check in checks %}
+        <tr>
+            <td>{{check.id}}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>{{check.created_at}}</td>
+        </tr>
+        {% endfor %}
     </tbody>
     </table>
   </div>

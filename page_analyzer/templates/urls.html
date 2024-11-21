@@ -17,20 +17,16 @@
     </tr>
     </thead>
     <tbody>
-        {% for url in urls %}
+        {% for check in checks %}
         <tr>
-          <td>{{url['id']}}</td>
+          <td>{{ check['id'] }}</td>
           <td>
-            <a href="/urls/{{url['id']}}">
-              {{url['name']}}
+            <a href="/urls/{{ check['id'] }}">
+              {{ check['name'] }}
             </a>
           </td>
-
-          <td></td>
-
-
-          <td></td>
-
+          <td>{{ check['last_check'] if check['last_check'] is not none else '' }}</td>
+          <td>{{ check['status_code'] if check['status_code'] is not none else '' }}</td>
         </tr>
         {% endfor %}
     </tbody>

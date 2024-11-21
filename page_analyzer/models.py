@@ -55,3 +55,40 @@ class UrlStorage:
                 id = cur.fetchone()[0]
                 url['id'] = id
             conn.commit()
+
+
+class UrlCheck:
+
+    def get_checks(self, url_id):
+        with get_db_connection() as conn:
+            with conn.cursor(cursor_factory=DictCursor) as curs:
+                curs.execute("""SELECT * FROM url_checks 
+                WHERE url_id = %s ORDER BY id""", (url_id, ))
+                # return [dict(row) for row in curs]
+                return curs.fetchall()
+
+    def get_last_checks(self):
+        with get_db_connection() as conn:
+            with conn.cursor(cursor_factory=DictCursor) as curs:
+                curs.execute("""SELECT urls.id, urls.name, MAX(url_checks.created_at) AS last_check, 
+                url_checks.status_code AS status_code FROM url_checks
+                RIGHT JOIN urls ON url_checks.url_id = urls.id
+                GROUP BY urls.id, urls.name, url_checks.status_code
+                ORDER BY urls.id""")
+                # return [dict(row) for row in curs]
+                return curs.fetchall()
+
+    def save(self, url_check):
+        with get_db_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """INSERT INTO url_checks (url_id, status_code, 
+                    h1, title, description, created_at)
+                    VALUES (%s, %s, %s, %s, %s, %s) RETURNING id""",
+                    (url_check['url_id'], url_check['title'],
+                     url_check['h1'], url_check['status_code'],
+                     url_check['description'], url_check['created_at'])
+                )
+                id = cur.fetchone()[0]
+                url_check['id'] = id
+            conn.commit()

@@ -6,9 +6,10 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from dotenv import load_dotenv
 from datetime import datetime
 
-from .models import UrlStorage
+from .models import UrlStorage, UrlCheck
 
 storage = UrlStorage()
+checker = UrlCheck()
 
 load_dotenv()
 
@@ -34,18 +35,30 @@ def urls_post():
 
     url_obj = {"name": from_url, "created_at": datetime.now()}
     storage.save(url_obj)
-    print(url_obj)
     return redirect(url_for('urls_identity', id=url_obj['id']))
 
 
 @app.route('/urls', methods=['GET'])
 def urls_get():
-    urls = storage.get_urls()
-    return render_template('urls.html', urls=urls)
+    checks = checker.get_last_checks()
+    return render_template('urls.html', checks=checks)
 
 
 @app.route('/urls/<id>')
 def urls_identity(id):
     # get data from database and send to template
     url_obj = storage.get_url(id)
-    return render_template('urls_identity.html', url=url_obj)
+    url_check_objs = checker.get_checks(id)
+    return render_template('url.html', url=url_obj,
+                           checks=url_check_objs)
+
+
+@app.route('/urls/<id>/checks', methods=['POST'])
+def urls_identity_checks(id):
+    url_check_obj = {"url_id": int(id), "status_code": None,
+                     "h1": None, "title": None, "description": None,
+                     "created_at": datetime.now()}
+
+    checker.save(url_check_obj)
+    return redirect(url_for('urls_identity', id=id))
+
