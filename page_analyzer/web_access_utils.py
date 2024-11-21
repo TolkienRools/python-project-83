@@ -1,8 +1,9 @@
 import requests
 from .models import UrlStorage
+from .parser import extract_site_data
 
 
-def get_site_data(url_check):
+def request_to_site(url_check):
     store = UrlStorage()
     url_data = store.get_url(url_check['url_id'])
 
@@ -11,6 +12,7 @@ def get_site_data(url_check):
             response = session.get(url_data['name'])
             response.raise_for_status()
             url_check['status_code'] = response.status_code
+            extract_site_data(response.text, url_check)
         except requests.exceptions.HTTPError:
             return 'Произошла ошибка при проверке'
         except requests.Timeout:

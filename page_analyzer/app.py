@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from datetime import datetime
 
 from .models import UrlStorage, UrlCheck
-from .web_access_utils import get_site_data
+from .web_access_utils import request_to_site
 
 storage = UrlStorage()
 checker = UrlCheck()
@@ -60,7 +60,7 @@ def urls_identity_checks(id):
                      "h1": None, "title": None, "description": None,
                      "created_at": datetime.now()}
 
-    error_message = get_site_data(url_check_obj)
+    error_message = request_to_site(url_check_obj)
     if error_message:
         flash(error_message, 'error')
         return redirect(url_for('urls_identity', id=id))
