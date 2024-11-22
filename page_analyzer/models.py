@@ -32,7 +32,7 @@ class UrlStorage:
             url['id'] = existant_url['id']
             self._update(url)
         else:
-            flash("Страница успешно добавлна", "success")
+            flash("Страница успешно добавлена", "success")
             self._create(url)
 
     def _update(self, url):

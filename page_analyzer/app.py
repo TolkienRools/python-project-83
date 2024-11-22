@@ -2,7 +2,16 @@ import os
 from urllib.parse import urlparse
 
 from validators.url import url
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import (
+    Flask,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    flash,
+    make_response
+)
+
 from dotenv import load_dotenv
 from datetime import datetime
 
@@ -29,7 +38,14 @@ def urls_post():
 
     if not url(from_url):
         flash("Некорректный URL", "error")
-        return render_template('index.html', url_name=from_url)
+        response = make_response(
+            render_template(
+                'index.html',
+                url_name=from_url
+            )
+        )
+        response.status_code = 422
+        return response
 
     parsed_url_data = urlparse(from_url)
     from_url = f"{parsed_url_data.scheme}://{parsed_url_data.netloc}"
