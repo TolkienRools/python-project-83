@@ -28,7 +28,7 @@ class UrlStorage:
         existant_url = self.get_url_by_name(url['name'])
 
         if existant_url:
-            flash("Страница уже есть", "info")
+            flash("Страница уже существует", "info")
             url['id'] = existant_url['id']
             self._update(url)
         else:
