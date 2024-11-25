@@ -37,7 +37,7 @@ def urls_post():
     from_url = request.form.get('url')
 
     if not url(from_url):
-        flash("Некорректный URL", "error")
+        flash("Некорректный URL", "danger")
         response = make_response(
             render_template(
                 'index.html',
@@ -78,7 +78,7 @@ def urls_identity_checks(id):
 
     error_message = request_to_site(url_check_obj)
     if error_message:
-        flash(error_message, 'error')
+        flash(error_message, 'danger')
         return redirect(url_for('urls_identity', id=id))
 
     checker.save(url_check_obj)
