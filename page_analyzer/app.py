@@ -28,7 +28,7 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 
 @app.route('/')
-def index():
+def index_get():
     return render_template('index.html')
 
 
@@ -38,21 +38,17 @@ def urls_post():
 
     if not url(from_url):
         flash("Некорректный URL", "danger")
-        response = make_response(
-            render_template(
-                'index.html',
-                url_name=from_url
-            )
-        )
-        response.status_code = 422
-        return response
+        return render_template(
+            'index.html',
+            url_name=from_url
+        ), 422
 
     parsed_url_data = urlparse(from_url)
-    from_url = f"{parsed_url_data.scheme}://{parsed_url_data.netloc}"
+    url_host = f"{parsed_url_data.scheme}://{parsed_url_data.netloc}"
 
-    url_obj = {"name": from_url, "created_at": datetime.now()}
+    url_obj = {"name": url_host, "created_at": datetime.now()}
     storage.save(url_obj)
-    return redirect(url_for('urls_identity', id=url_obj['id']))
+    return redirect(url_for('urls_identity_get', id=url_obj['id']))
 
 
 @app.route('/urls', methods=['GET'])
@@ -61,26 +57,26 @@ def urls_get():
     return render_template('urls.html', checks=checks)
 
 
-@app.route('/urls/<id>')
-def urls_identity(id):
+@app.route('/urls/<url_id>')
+def urls_identity_get(url_id):
     # get data from database and send to template
-    url_obj = storage.get_url(id)
-    url_check_objs = checker.get_checks(id)
+    url_obj = storage.get_url(url_id)
+    url_check_objs = checker.get_checks(url_id)
     return render_template('url.html', url=url_obj,
                            checks=url_check_objs)
 
 
-@app.route('/urls/<id>/checks', methods=['POST'])
-def urls_identity_checks(id):
-    url_check_obj = {"url_id": int(id), "status_code": None,
+@app.route('/urls/<url_id>/checks', methods=['POST'])
+def urls_identity_checks_post(url_id):
+    url_check_obj = {"url_id": int(url_id), "status_code": None,
                      "h1": None, "title": None, "description": None,
                      "created_at": datetime.now()}
 
     error_message = request_to_site(url_check_obj)
     if error_message:
         flash(error_message, 'danger')
-        return redirect(url_for('urls_identity', id=id))
+        return redirect(url_for('urls_identity_get', id=url_id))
 
     checker.save(url_check_obj)
     flash('Страница успешно проверена', 'success')
-    return redirect(url_for('urls_identity', id=id))
+    return redirect(url_for('urls_identity_get', id=url_id))
