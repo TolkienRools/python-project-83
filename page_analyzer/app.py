@@ -82,7 +82,7 @@ def urls_identity_checks_post(url_id):
     url_data, error_message = request_to_site(g.db, url_id)
     if error_message:
         flash(error_message, 'danger')
-        return redirect(url_for('urls_identity_get', id=url_id))
+        return redirect(url_for('urls_identity_get', url_id=url_id))
 
     save_check(g.db, url_data)
     flash('Страница успешно проверена', 'success')
