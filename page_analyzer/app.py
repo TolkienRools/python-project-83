@@ -29,7 +29,7 @@ app.config['SECRET_KEY'] = SECRET_KEY
 
 @app.before_request
 def before_request():
-   g.db = psycopg2.connect(DATABASE_URL)
+    g.db = psycopg2.connect(DATABASE_URL)
 
 
 @app.teardown_request
