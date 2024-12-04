@@ -2,6 +2,8 @@ from urllib.parse import urlparse
 from validators.url import url
 from datetime import datetime
 import psycopg2
+from dotenv import load_dotenv
+import os
 from flask import (
     Flask,
     render_template,
@@ -12,7 +14,6 @@ from flask import (
     g
 )
 
-from page_analyzer.config import SECRET_KEY, DATABASE_URL
 from page_analyzer.models import (
     get_url,
     upsert_url,
@@ -21,6 +22,11 @@ from page_analyzer.models import (
     save_check
 )
 from page_analyzer.web_access_utils import request_to_site
+
+load_dotenv()
+
+SECRET_KEY = os.getenv('SECRET_KEY')
+DATABASE_URL = os.getenv('DATABASE_URL')
 
 
 app = Flask(__name__)
