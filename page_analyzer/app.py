@@ -1,9 +1,9 @@
 from urllib.parse import urlparse
-from validators.url import url
 from datetime import datetime
+import os
+
 import psycopg2
 from dotenv import load_dotenv
-import os
 from flask import (
     Flask,
     render_template,
@@ -14,6 +14,7 @@ from flask import (
     g
 )
 
+from validators.url import url
 from page_analyzer.models import (
     get_url,
     upsert_url,

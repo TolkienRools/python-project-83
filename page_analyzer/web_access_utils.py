@@ -1,5 +1,6 @@
 import requests
 from datetime import datetime
+
 from page_analyzer.models import get_url
 from page_analyzer.parser import extract_site_data
 
