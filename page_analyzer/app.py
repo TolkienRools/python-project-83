@@ -1,6 +1,6 @@
-from urllib.parse import urlparse
-from datetime import datetime
 import os
+from datetime import datetime
+from urllib.parse import urlparse
 
 import psycopg2
 from dotenv import load_dotenv
@@ -13,8 +13,8 @@ from flask import (
     flash,
     g
 )
-
 from validators.url import url
+
 from page_analyzer.models import (
     get_url,
     upsert_url,
