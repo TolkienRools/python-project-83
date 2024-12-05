@@ -2,25 +2,28 @@ import os
 from datetime import datetime
 from urllib.parse import urlparse
 
-import psycopg2
 from dotenv import load_dotenv
+
 from flask import (
     Flask,
+    flash,
+    g,
+    redirect,
     render_template,
     request,
-    redirect,
-    url_for,
-    flash,
-    g
+    url_for
 )
+
+import psycopg2
+
 from validators.url import url
 
 from page_analyzer.models import (
-    get_url,
-    upsert_url,
-    get_last_checks,
     get_checks,
-    save_check
+    get_last_checks,
+    get_url,
+    save_check,
+    upsert_url
 )
 from page_analyzer.web_access_utils import request_to_site
 
