@@ -7,8 +7,13 @@ from dotenv import load_dotenv
 from flask import Flask, flash, g, redirect, render_template, request, url_for
 from validators.url import url
 
-from page_analyzer.models import (get_checks, get_last_checks, get_url,
-                                  save_check, upsert_url)
+from page_analyzer.models import (
+    get_checks,
+    get_last_checks,
+    get_url,
+    save_check,
+    upsert_url,
+)
 from page_analyzer.web_access_utils import request_to_site
 
 load_dotenv()
