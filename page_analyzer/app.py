@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 
 from dotenv import load_dotenv
 from flask import Flask, flash, g, redirect, render_template, request, url_for
-from validators.url import url
+from validators.url import url as validate_url
 
 from page_analyzer.models import (
     connect_to_db,
@@ -49,7 +49,7 @@ def index_get():
 def urls_post():
     from_url = request.form.get('url')
 
-    if not url(from_url):
+    if not validate_url(from_url):
         flash("Некорректный URL", "danger")
         return render_template(
             'index.html',
