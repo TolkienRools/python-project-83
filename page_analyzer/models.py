@@ -11,7 +11,8 @@ def get_urls(conn):
         curs.execute(
             """
             SELECT *
-            FROM urls
+            FROM
+                urls
             ORDER BY id;
             """)
         return curs.fetchall()
@@ -22,7 +23,8 @@ def get_url(conn, id):
         curs.execute(
             """
             SELECT *
-            FROM urls
+            FROM
+                urls
             WHERE id = %s;
             """, (id, ))
         return curs.fetchone()
@@ -33,7 +35,8 @@ def get_url_by_name(conn, name):
         curs.execute(
             """
             SELECT *
-            FROM urls
+            FROM
+                urls
             WHERE name = %s;
             """, (name, ))
         return curs.fetchone()
@@ -43,9 +46,11 @@ def update_url(conn, url):
     with conn.cursor() as cur:
         cur.execute(
             """
-            UPDATE urls
-            SET name = %s,
-            created_at = %s
+            UPDATE
+                urls
+            SET
+                name = %s,
+                created_at = %s
             WHERE id = %s;
             """,
             (url['name'], url['created_at'], url['id'])
@@ -56,10 +61,11 @@ def create_url(conn, url):
     with conn.cursor() as cur:
         cur.execute(
             """
-            INSERT INTO urls
-            (name, created_at)
+            INSERT INTO
+                urls
+                (name, created_at)
             VALUES
-            (%s, %s)
+                (%s, %s)
             RETURNING id;
             """,
             (url['name'], url['created_at'])
@@ -73,8 +79,10 @@ def get_checks(conn, url_id):
         curs.execute(
             """
             SELECT *
-            FROM url_checks
-            WHERE url_id = %s
+            FROM
+                url_checks
+            WHERE
+                url_id = %s
             ORDER BY id;
             """, (url_id, ))
         return curs.fetchall()
@@ -84,12 +92,13 @@ def create_check(conn, url_check):
     with conn.cursor() as cur:
         cur.execute(
             """
-            INSERT INTO url_checks
-            (url_id, status_code,
-            h1, title, description,
-            created_at)
+            INSERT INTO
+                url_checks
+                (url_id, status_code,
+                h1, title, description,
+                created_at)
             VALUES
-            (%s, %s, %s, %s, %s, %s)
+                (%s, %s, %s, %s, %s, %s)
             RETURNING id;
             """,
             (url_check['url_id'], url_check['status_code'],
