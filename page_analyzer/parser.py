@@ -1,3 +1,5 @@
+from urllib.parse import urlparse
+
 from bs4 import BeautifulSoup
 
 
@@ -16,3 +18,8 @@ def extract_site_data(data):
         description = meta_descr_find.get('content')
 
     return h1, title, description
+
+
+def get_url_host(url):
+    parsed_url_data = urlparse(url)
+    return f"{parsed_url_data.scheme}://{parsed_url_data.netloc}"

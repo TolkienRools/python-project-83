@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-# Postgres позволяет подключиться к удаленной базе указав ссылку на нее после флага -d
-# ссылка подгрузится из переменной окружения, которую нам нужно будет указать на сервисе деплоя
-# дальше мы загружаем в поключенную базу наш sql-файл с таблицами
+# Postgres allows connecting to a remote database using a database URL specified after the -d flag.
+# The database URL can be obtained from the DATABASE_URL environment variable.
+# This value should be set on the platform where the deployment is performed.
+# After that, we can create tables using the database.sql file with the -f flag.
+
 make install && psql -a -d $DATABASE_URL -f database.sql

@@ -21,7 +21,7 @@
         <tr>
           <td>{{ url_check['id'] }}</td>
           <td>
-            <a href="/urls/{{ url_check['id'] }}">
+            <a href="{{ url_for('get_url', url_id=url_check['id']) }}">
               {{ url_check['name'] }}
             </a>
           </td>
