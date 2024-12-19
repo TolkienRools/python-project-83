@@ -79,9 +79,11 @@ def get_urls():
                          key=lambda check: check.created_at,
                          default={})
 
-        output_table.append({"id": url.id, "name": url.name,
-                             "last_check": getattr(last_check, 'created_at', ''),
-                             "status_code": getattr(last_check, 'status_code', '')})
+        output_table.append({
+            "id": url.id, "name": url.name,
+            "last_check": getattr(last_check, 'created_at', ''),
+            "status_code": getattr(last_check, 'status_code', '')
+        })
 
     return render_template('urls.html', last_checks=output_table)
 

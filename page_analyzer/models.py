@@ -1,5 +1,5 @@
 from psycopg2 import connect
-from psycopg2.extras import DictCursor, NamedTupleCursor
+from psycopg2.extras import NamedTupleCursor
 
 
 def connect_to_db(db_url):
