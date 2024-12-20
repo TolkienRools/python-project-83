@@ -48,22 +48,6 @@ def get_url_by_name(conn, name):
         return curs.fetchone()
 
 
-def update_url(conn, url):
-    with conn.cursor() as cur:
-        cur.execute(
-            """
-            UPDATE
-              urls
-            SET
-              name = %s,
-              created_at = %s
-            WHERE
-              id = %s;
-            """,
-            (url['name'], url['created_at'], url['id'])
-        )
-
-
 def create_url(conn, url):
     with conn.cursor() as cur:
         cur.execute(
