@@ -19,14 +19,14 @@
     <tbody>
         {% for url_check in last_checks %}
         <tr>
-          <td>{{ url_check['id'] }}</td>
+          <td>{{ url_check.id }}</td>
           <td>
             <a href="{{ url_for('get_url', url_id=url_check['id']) }}">
-              {{ url_check['name'] }}
+              {{ url_check.name }}
             </a>
           </td>
-          <td>{{ url_check['last_check'] if url_check['last_check'] is not none else '' }}</td>
-          <td>{{ url_check['status_code'] if url_check['status_code'] is not none else '' }}</td>
+          <td>{{ url_check.last_check }}</td>
+          <td>{{ url_check.status_code }}</td>
         </tr>
         {% endfor %}
     </tbody>

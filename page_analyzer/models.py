@@ -94,6 +94,25 @@ def get_checks(conn, url_id):
         return curs.fetchall()
 
 
+def get_related_checks(conn, url_ids):
+    with conn.cursor(cursor_factory=NamedTupleCursor) as curs:
+        curs.execute(
+            """
+            SELECT
+              DISTINCT ON (url_id) url_id,
+              created_at,
+              status_code
+            FROM
+              url_checks
+            WHERE
+              url_id = ANY(%s)
+            ORDER BY
+              url_id,
+              created_at DESC;
+            """, (url_ids, ))
+        return curs.fetchall()
+
+
 def create_check(conn, url_check):
     with conn.cursor() as cur:
         cur.execute(

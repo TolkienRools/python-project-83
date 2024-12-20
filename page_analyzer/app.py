@@ -1,4 +1,5 @@
 import os
+from collections import namedtuple
 from datetime import datetime
 
 from dotenv import load_dotenv
@@ -67,25 +68,33 @@ def get_urls():
     """
         Combined output from get_urls and get_checks
         using url_id and looking for last date in get_checks
-        {"url_id": 1, "name": "https://bla.com",
-        "created_at": "2024-12-13", "status_code": 200}
+        CombinedData(
+            id=url.id, name=url.name,
+            last_check=check.created_at,
+            status_code=check.status_code
+        )
     """
     urls = models.get_urls(g.db)
+    checks = models.get_related_checks(g.db, [url.id for url in urls])
 
-    output_table = []
+    check_dict = {check.url_id: check for check in checks}
+
+    # Create a combined list of dictionaries
+    CombinedData = namedtuple('CombinedData', ['id', 'name',
+                                               'last_check',
+                                               'status_code'])
+    CheckEmptyData = namedtuple('CheckEmptyData', ['created_at',
+                                                   'status_code'])
+    empty_check = CheckEmptyData('', '')
+    combined_data = []
     for url in urls:
-        related_checks = models.get_checks(g.db, url.id)
-        last_check = max(related_checks,
-                         key=lambda check: check.created_at,
-                         default={})
-
-        output_table.append({
-            "id": url.id, "name": url.name,
-            "last_check": getattr(last_check, 'created_at', ''),
-            "status_code": getattr(last_check, 'status_code', '')
-        })
-
-    return render_template('urls.html', last_checks=output_table)
+        check = check_dict.get(url.id, empty_check)
+        combined_data.append(CombinedData(
+            id=url.id, name=url.name,
+            last_check=check.created_at,
+            status_code=check.status_code
+        ))
+    return render_template('urls.html', last_checks=combined_data)
 
 
 @app.route('/urls/<url_id>')
