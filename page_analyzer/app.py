@@ -1,5 +1,4 @@
 import os
-from collections import namedtuple
 from datetime import datetime
 
 from dotenv import load_dotenv
@@ -12,13 +11,10 @@ from page_analyzer.web_access_utils import request_to_site
 
 load_dotenv()
 
-SECRET_KEY = os.getenv('SECRET_KEY')
-DATABASE_URL = os.getenv('DATABASE_URL')
-
 
 app = Flask(__name__)
-app.config['DATABASE_URL'] = DATABASE_URL
-app.config['SECRET_KEY'] = SECRET_KEY
+app.config['DATABASE_URL'] = os.getenv('DATABASE_URL')
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 
 @app.before_request
@@ -30,6 +26,16 @@ def before_request():
 def teardown_request(exception):
     g.db.commit()
     g.db.close()
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('errors/404.html'), 404
+
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    return render_template('errors/500.html'), 500
 
 
 @app.route('/')
@@ -74,35 +80,16 @@ def get_urls():
             status_code=check.status_code
         )
     """
-    urls = models.get_urls(g.db)
-    checks = models.get_related_checks(g.db, [url.id for url in urls])
-
-    check_dict = {check.url_id: check for check in checks}
-
-    # Create a combined list of dictionaries
-    CombinedData = namedtuple('CombinedData', ['id', 'name',
-                                               'last_check',
-                                               'status_code'])
-    CheckEmptyData = namedtuple('CheckEmptyData', ['created_at',
-                                                   'status_code'])
-    empty_check = CheckEmptyData('', '')
-    combined_data = []
-    for url in urls:
-        check = check_dict.get(url.id, empty_check)
-        combined_data.append(CombinedData(
-            id=url.id, name=url.name,
-            last_check=check.created_at,
-            status_code=check.status_code
-        ))
+    combined_data = models.get_combined_checks_data(g.db)
     return render_template('urls.html', last_checks=combined_data)
 
 
 @app.route('/urls/<url_id>')
 def get_url(url_id):
     new_url = models.get_url(g.db, url_id)
-    url_checks = models.get_checks(g.db, url_id)
+    checks = models.get_checks(g.db, url_id)
     return render_template('url.html', url=new_url,
-                           checks=url_checks)
+                           checks=checks)
 
 
 @app.route('/urls/<url_id>/checks', methods=['POST'])

@@ -1,3 +1,5 @@
+from collections import namedtuple
+
 from psycopg2 import connect
 from psycopg2.extras import NamedTupleCursor
 
@@ -114,3 +116,28 @@ def create_check(conn, url_check):
         )
         check_id = cur.fetchone()[0]
         return check_id
+
+
+def get_combined_checks_data(conn):
+    urls = get_urls(conn)
+    checks = get_related_checks(conn, [url.id for url in urls])
+
+    check_dict = {check.url_id: check for check in checks}
+
+    # Create a combined list of dictionaries
+    CombinedData = namedtuple('CombinedData', ['id', 'name',
+                                               'last_check',
+                                               'status_code'])
+    CheckEmptyData = namedtuple('CheckEmptyData', ['created_at',
+                                                   'status_code'])
+    empty_check = CheckEmptyData('', '')
+    combined_data = []
+    for url in urls:
+        check = check_dict.get(url.id, empty_check)
+        combined_data.append(CombinedData(
+            id=url.id, name=url.name,
+            last_check=check.created_at,
+            status_code=check.status_code
+        ))
+    return combined_data
+
